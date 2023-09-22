@@ -195,7 +195,7 @@ void element_remove(int arr[], int size, int x) {
 void keyfloor(int elevator_now, int TIME) {
     if (GUDGE != 0) {
         printf("%d %d %d\n", elevator_now, TIME, NUM);
-        GUDGE == 0;
+        GUDGE = 0;
     }
     NUM1 = NUM;
 }
