@@ -3,8 +3,9 @@
 
 int NUM;
 int NUM1;
-int size = 10;
-int table[10] = { 0 };
+int GUDGE = 0;
+int size = 15;
+int table[15] = { 0 };
 int waiting[10] = { 0 };
 int arriving[10] = { 0 };
 
@@ -27,9 +28,9 @@ int quality(int elevator_now, int arr[]);
 
 int main() {
     int elevator_now;
-    int passenger[10] = { 0 };
+    int passenger[15] = { 0 };
     int elevator_target[11] = { 0 };
-    int staging[10] = { 0 };
+    int staging[15] = { 0 };
     int SUM = 0;
     int TIME = 0;
     int NUMBER = 0;
@@ -98,7 +99,15 @@ int main() {
 
 int min(int arr[], int size) {
     int min = arr[0];
-    for (int i = 1; i < size; i++) {
+    for (int i = 0; i < size; i++)
+    {
+        if (arr[i] > 0)
+        {
+            min = arr[i];
+            break;
+        }
+    }
+    for (int i = 0; i < size; i++) {
         if (arr[i] < min && arr[i]>0) {
             min = arr[i];
         }
@@ -109,7 +118,7 @@ int min(int arr[], int size) {
 
 int max(int arr[], int size) {
     int max = arr[0];
-    for (int i = 1; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         if (arr[i] > max) {
             max = arr[i];
         }
@@ -147,16 +156,17 @@ void suspend(int passenger[], int elevator_now, int elevator_target[], int stagi
         NUM = NUM - qual;
         element_remove(arriving, size, elevator_now);
         elevator_target[elevator_now] = 0;
+        GUDGE++;
     }
 
-    if (passenger[elevator_now] == 1) {
-        int qual = quality(elevator_now, waiting);
-        NUM = NUM + qual;
+    if (passenger[elevator_now] == 1&&NUM<4) {
+        NUM ++;
         element_remove(waiting, size, elevator_now);
         passenger[elevator_now] = 0;
         elevator_target[staging[elevator_now]] = 1;
         add(arriving, staging[elevator_now], size);
         add(table, staging[elevator_now], size);
+        GUDGE++;
     }
 
     element_remove(table, size, elevator_now);
@@ -183,8 +193,9 @@ void element_remove(int arr[], int size, int x) {
 }
 
 void keyfloor(int elevator_now, int TIME) {
-    if (NUM != NUM1) {
+    if (GUDGE != 0) {
         printf("%d %d %d\n", elevator_now, TIME, NUM);
+        GUDGE == 0;
     }
     NUM1 = NUM;
 }
