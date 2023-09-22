@@ -5,6 +5,8 @@ int NUM;
 int NUM1;
 int size = 10;
 int table[10] = { 0 };
+int waiting[10] = { 0 };
+int arriving[10] = { 0 };
 
 int min(int arr[], int size);
 int max(int arr[], int size);
@@ -21,7 +23,7 @@ void element_remove(int arr[], int size, int x);
 void keyfloor(int elevator_now, int TIME);
 //关键楼层时，用来判断是否打印数据
 int start(int elevator_now, int size);
-int quality(int elevator_now);
+int quality(int elevator_now, int arr[]);
 
 int main() {
     int elevator_now;
@@ -44,6 +46,7 @@ int main() {
         scanf("%d %d", &x, &y);
         table[i] = x;
         passenger[x] = 1;
+        waiting[i] = x;
         staging[x] = y;
         i++;
     }
@@ -80,6 +83,9 @@ int main() {
         }
         else if (direction == 0) {
             passenger[elevator_now] = 0;
+            elevator_target[staging[elevator_now]] = 1;
+            add(arriving, staging[elevator_now], size);
+            add(table, staging[elevator_now], size);
             element_remove(table, size, elevator_now);
             NUM++;
             printf("%d %d %d\n", elevator_now, TIME, NUM);
@@ -137,20 +143,20 @@ int sum(int arr1[], int size) {
 
 void suspend(int passenger[], int elevator_now, int elevator_target[], int staging[], int size) {
     if (elevator_target[elevator_now] == 1) {
-        int x;
-        int qual = quality(elevator_now);
+        int qual = quality(elevator_now, arriving);
         NUM = NUM - qual;
+        element_remove(arriving, size, elevator_now);
         elevator_target[elevator_now] = 0;
-        x = staging[elevator_now];
     }
 
     if (passenger[elevator_now] == 1) {
-        int x;
-        NUM++;
+        int qual = quality(elevator_now, waiting);
+        NUM = NUM + qual;
+        element_remove(waiting, size, elevator_now);
         passenger[elevator_now] = 0;
-        x = staging[elevator_now];
         elevator_target[staging[elevator_now]] = 1;
-        add(table, x, size);
+        add(arriving, staging[elevator_now], size);
+        add(table, staging[elevator_now], size);
     }
 
     element_remove(table, size, elevator_now);
@@ -192,10 +198,10 @@ int start(int elevator_now, int size) {
     return ret1;
 }
 
-int quality(int elevator_now) {
+int quality(int elevator_now, int arr[]) {
     int qual = 0;
     for (int i = 0; i < size; i++) {
-        if (table[i] == elevator_now)
+        if (arr[i] == elevator_now)
             qual++;
     }
     return qual;
